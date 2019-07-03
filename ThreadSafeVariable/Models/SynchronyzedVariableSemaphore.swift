@@ -8,11 +8,19 @@
 
 import Foundation
 
-class SynchronyzedVariableSemaphore<T>: VariableWrapper<T> {
+class SynchronyzedVariableSemaphore<T>: SynchronyzedVariable {
 
-    let semaphore = DispatchSemaphore(value: 1)
+    typealias Variable = T
 
-    override func read() -> T {
+    private var variable: T
+
+    private let semaphore = DispatchSemaphore(value: 1)
+
+    required init(_ value: T) {
+        variable = value
+    }
+
+    func read() -> T {
         var value: T!
         semaphore.wait()
         value = variable
@@ -20,13 +28,13 @@ class SynchronyzedVariableSemaphore<T>: VariableWrapper<T> {
         return value
     }
 
-    override func write(value: T) {
+    func write(value: T) {
         semaphore.wait()
         variable = value
         semaphore.signal()
     }
 
-    override func writeAndGetOld(value: T) -> T {
+    func writeAndGetOld(value: T) -> T {
         let oldValue = read()
         write(value: value)
         return oldValue

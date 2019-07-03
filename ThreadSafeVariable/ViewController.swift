@@ -29,11 +29,11 @@ class ViewController: UIViewController {
     @IBAction func start(_ sender: Any) {
         switch testType.selectedSegmentIndex {
         case 0:
-            checnkVariable(variable: SynchronyzedVariableBarrier<Int>(0))
+            checkVariable(variable: SynchronyzedVariableBarrier<Int>(0))
         case 1:
-            checnkVariable(variable: SynchronyzedVariableSemaphore<Int>(0))
+            checkVariable(variable: SynchronyzedVariableSemaphore<Int>(0))
         case 2:
-            checnkVariable(variable: SynchronyzedVariableLock<Int>(0))
+            checkVariable(variable: SynchronyzedVariableLock<Int>(0))
         case 3:
             checkArray()
         default:
@@ -45,7 +45,8 @@ class ViewController: UIViewController {
 
 private extension ViewController {
 
-    func checnkVariable(variable: VariableWrapper<Int>) {
+    func checkVariable<VariableWrapper: SynchronyzedVariable>(variable: VariableWrapper)
+        where VariableWrapper.Variable == Int {
         isExecuting = true
         queue.async {
             DispatchQueue.concurrentPerform(iterations: 1000) { index in

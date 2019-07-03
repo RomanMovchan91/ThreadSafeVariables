@@ -1,5 +1,5 @@
 //
-//  VariableWrapperProtocol.swift
+//  SynchronyzedVariable.swift
 //  ThreadSafeVariable
 //
 //  Created by Roman Movchan on 7/1/19.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-protocol VariableWrapperProtocol: class {
+protocol SynchronyzedVariable: class {
 
     associatedtype Variable
 
@@ -19,5 +19,4 @@ protocol VariableWrapperProtocol: class {
     func write(value: Variable)
 
     func writeAndGetOld(value: Variable) -> Variable
-
 }

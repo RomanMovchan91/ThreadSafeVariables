@@ -8,11 +8,19 @@
 
 import Foundation
 
-class SynchronyzedVariableBarrier<T>: VariableWrapper<T> {
+class SynchronyzedVariableBarrier<T>: SynchronyzedVariable {
+
+    typealias Variable = T
+
+    private var variable: T
 
     private let synchronizedQueue = DispatchQueue(label: "SynchronizedVariableBarrier", attributes: .concurrent)
 
-    override func read() -> T {
+    required init(_ value: T) {
+        variable = value
+    }
+
+    func read() -> T {
         var value: T!
         synchronizedQueue.sync {
             value = variable
@@ -20,13 +28,13 @@ class SynchronyzedVariableBarrier<T>: VariableWrapper<T> {
         return value
     }
 
-    override func write(value: T) {
+    func write(value: T) {
         synchronizedQueue.async(flags: .barrier) {
             self.variable = value
         }
     }
 
-    override func writeAndGetOld(value: T) -> T {
+    func writeAndGetOld(value: T) -> T {
         let oldValue = read()
         write(value: value)
         return oldValue

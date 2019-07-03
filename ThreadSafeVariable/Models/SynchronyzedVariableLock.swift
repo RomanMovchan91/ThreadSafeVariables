@@ -8,11 +8,19 @@
 
 import Foundation
 
-class SynchronyzedVariableLock<T>: VariableWrapper<T> {
+class SynchronyzedVariableLock<T>: SynchronyzedVariable {
+
+    typealias Variable = T
+
+    private var variable: T
 
     private var locker = NSLock()
 
-    override func read() -> T {
+    required init(_ value: T) {
+        variable = value
+    }
+
+    func read() -> T {
         var value: T!
         locker.lock()
         value = variable
@@ -20,13 +28,13 @@ class SynchronyzedVariableLock<T>: VariableWrapper<T> {
         return value
     }
 
-    override func write(value: T) {
+    func write(value: T) {
         locker.lock()
         variable = value
         locker.unlock()
     }
 
-    override func writeAndGetOld(value: T) -> T {
+    func writeAndGetOld(value: T) -> T {
         let oldValue = read()
         write(value: value)
         return oldValue
